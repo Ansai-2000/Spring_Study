@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Profile;
 
 
 @Slf4j
-@Import(MyBatisConfig.class)
+@Import(JpaConfig.class)
 @SpringBootApplication(scanBasePackages = "hello.itemservice.web")
 public class ItemServiceApplication {
 
