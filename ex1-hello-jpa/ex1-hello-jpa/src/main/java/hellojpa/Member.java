@@ -1,31 +1,30 @@
 package hellojpa;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
-@TableGenerator(
-        name = "MEMBER_SEQ_GENERATOR",
-        table = "MY_SEQUENCES",
-        pkColumnValue = "MEMBER_SEQ", allocationSize = 1)
 public class Member {
 
     @Id
-        @GeneratedValue(strategy = GenerationType.TABLE,
-                generator = "MEMBER_SEQ_GENERATOR")
-        private String id;
+    @GeneratedValue
+    private Long id;
 
-    @Column(name = "name")
+    @Column(name = "USERNAME")
     private String username;
+    private int age;
+
+    @ManyToOne
+    @JoinColumn(name = "TEAM_ID")
+    private Team team;
 
     public Member(){
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -35,5 +34,22 @@ public class Member {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
+        team.getMembers().add(this);
     }
 }
