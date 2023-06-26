@@ -4,6 +4,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import java.util.List;
 
 public class JpaMain {
 
@@ -16,23 +20,19 @@ public class JpaMain {
 
         try {
 
-            Member member = new Member();
-            member.setUsername("member1");
-            member.setHomeAddress(new Address("homeCity","street","10000"));
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Member> query = cb.createQuery(Member.class);
 
-            member.getFavoriteFoods().add("치킨");
-            member.getFavoriteFoods().add("족발");
-            member.getFavoriteFoods().add("피자");
+            Root<Member> m = query.from(Member.class);
 
-            member.getAddressHistory().add(new AddressEntity("old1","street","10000"));
-            member.getAddressHistory().add(new AddressEntity("old2","street","10000"));
+            CriteriaQuery<Member> cq = query.select(m).where(cb.equal(m.get("username"), "kim"));
+            List<Member> resultList = em.createQuery(cq)
+                    .getResultList();
 
-            em.persist(member);
+
 
             em.flush();
             em.clear();
-
-            Member findMember = em.find(Member.class, member.getId());
 
             tx.commit();
         }catch(Exception e) {
