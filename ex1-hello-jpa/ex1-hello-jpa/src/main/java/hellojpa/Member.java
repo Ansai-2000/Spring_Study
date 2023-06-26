@@ -2,33 +2,42 @@ package hellojpa;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.locks.Lock;
+import java.util.Set;
 
 @Entity
 public class Member {
 
     @Id
     @GeneratedValue
+    @Column(name = "MEMBER_ID")
     private Long id;
 
     @Column(name = "USERNAME")
     private String username;
-    private int age;
 
-    @ManyToOne
-    @JoinColumn(name = "TEAM_ID")
-    private Team team;
+    @Embedded
+    private Period workPeriod;
 
-    @OneToOne
-    @JoinColumn(name = "LOCKER_ID")
-    private Locker locker;
+    @Embedded
+    private Address homeAddress;
 
-    @OneToMany(mappedBy = "member")
-    private List<MemberProduct> memberProducts = new ArrayList<>();
+    @ElementCollection
+    @CollectionTable(name = "FAVORITE_FOOD", joinColumns =
+        @JoinColumn(name = "MEMBER_ID")
+    )
+    @Column(name = "FOOD_NAME")
+    private Set<String> favoriteFoods = new HashSet<>();
 
-    public Member(){
-    }
+//    @CollectionTable(name = "ADDRESS",joinColumns =
+//        @JoinColumn(name = "MEMBER_ID")
+//    )
+//    private List<Address> addressHistory = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
+    @JoinColumn(name = "MEMBER_ID")
+    private List<AddressEntity> addressHistory = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -46,20 +55,35 @@ public class Member {
         this.username = username;
     }
 
-    public int getAge() {
-        return age;
+    public Period getWorkPeriod() {
+        return workPeriod;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public void setWorkPeriod(Period workPeriod) {
+        this.workPeriod = workPeriod;
     }
 
-    public Team getTeam() {
-        return team;
+    public Address getHomeAddress() {
+        return homeAddress;
     }
 
-    public void setTeam(Team team) {
-        this.team = team;
-        team.getMembers().add(this);
+    public void setHomeAddress(Address homeAddress) {
+        this.homeAddress = homeAddress;
+    }
+
+    public Set<String> getFavoriteFoods() {
+        return favoriteFoods;
+    }
+
+    public void setFavoriteFoods(Set<String> favoriteFoods) {
+        this.favoriteFoods = favoriteFoods;
+    }
+
+    public List<AddressEntity> getAddressHistory() {
+        return addressHistory;
+    }
+
+    public void setAddressHistory(List<AddressEntity> addressHistory) {
+        this.addressHistory = addressHistory;
     }
 }
