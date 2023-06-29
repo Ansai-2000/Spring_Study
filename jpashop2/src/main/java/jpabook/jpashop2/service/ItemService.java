@@ -1,5 +1,6 @@
 package jpabook.jpashop2.service;
 
+import jpabook.jpashop2.domain.item.Book;
 import jpabook.jpashop2.domain.item.Item;
 import jpabook.jpashop2.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +17,16 @@ public class ItemService {
     private final ItemRepository itemRepository;
 
     @Transactional
-    public void save(Item item){
+    public void saveItem(Item item){
         itemRepository.save(item);
+    }
+
+    @Transactional
+    public void updateItem(Long itemId, Book param){
+        Item findItem = itemRepository.findOne(itemId);
+        findItem.setPrice(param.getPrice());
+        findItem.setName(param.getName());
+        findItem.setStockQuantity(param.getStockQuantity());
     }
 
     public List<Item> findItems(){
